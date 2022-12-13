@@ -1,5 +1,6 @@
 package com.adekunle.springsecuritywithfilterchain.config;
 
+import com.adekunle.springsecuritywithfilterchain.database.AppUsersDatabase;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
+    private final AppUsersDatabase appUsers;
     private final JwtUtils jwtUtils;
 
     @Override
@@ -36,7 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
         userEmail = jwtUtils.extractUsername(jwtToken);
 if(userEmail == null && SecurityContextHolder.getContext().getAuthentication() == null ){
-    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+    UserDetails userDetails = appUsers.findByEmail(userEmail);
 
     if(jwtUtils.isValidateToken(jwtToken,userDetails)){
         UsernamePasswordAuthenticationToken authenticationToken =
