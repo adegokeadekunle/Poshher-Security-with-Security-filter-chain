@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -25,13 +25,12 @@ public class AuthenticationController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authManager(@RequestBody AuthenticationRequest request){
-authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
- final UserDetails user= appUsers.findByEmail(request.getEmail());
- if (user !=null){
-     return ResponseEntity.ok(jwtUtils.generateToken(user));
- }
-
+    public ResponseEntity<String> authManager(@RequestBody AuthenticationRequest request) {
+        authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        final UserDetails user = appUsers.findByEmail(request.getEmail());
+        if (user != null) {
+            return ResponseEntity.ok(jwtUtils.generateToken(user));
+        }
         return ResponseEntity.status(400).body("error has occurred");
     }
 }
